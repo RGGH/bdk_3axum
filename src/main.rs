@@ -38,6 +38,7 @@ async fn handler_hello(Query(params):Query<HelloParams>)->impl IntoResponse{
     Html(format!("<strong>{name}!</strong>"))
 }
 
+// eg /hello2/xob
 async fn handler_hello2(Path(name) : Path<String>) -> impl IntoResponse {
     println!("->>{:<12}","Handler");
     Html(format!("<strong>{name}!</strong>"))
