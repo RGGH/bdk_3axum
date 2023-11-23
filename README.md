@@ -1,8 +1,11 @@
 # bdk_3axum
 
 Attempt to combine BDK & Axum (learning exercise)
+uses : Bitcoin Testnet + Electrum
 
-- Create Wallet
+- Create Bitcoin Wallet
 - Create PSBT + Sign + Broadcast
+
+#### https://redandgreen.co.uk/bitcoin-testnet-test-faucet/bitcoin-programming/
 
 
