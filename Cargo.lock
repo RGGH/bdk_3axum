@@ -90,21 +90,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "axummmm"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "axum",
- "bdk",
- "httpc-test",
- "serde",
- "serde_json",
- "tokio",
- "tower-cookies",
- "tower-http",
-]
-
-[[package]]
 name = "backtrace"
 version = "0.3.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -162,6 +147,21 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
+]
+
+[[package]]
+name = "bdk_3axum"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "bdk",
+ "httpc-test",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tower-cookies",
+ "tower-http",
 ]
 
 [[package]]
