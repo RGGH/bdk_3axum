@@ -1,23 +1,43 @@
 #![allow(unused)]
-use std::net::SocketAddr;
-use axum::extract::Query;
-
 use axum::extract::Path;
-use axum::Router;
-use axum::routing::get;
+use axum::extract::{Query,Extension};
+use axum::middleware;
+use axum::response::Response;
 use axum::response::{Html, IntoResponse};
+use axum::routing::get;
+use axum::routing::get_service;
+use axum::Router;
 use serde::Deserialize;
+use std::net::SocketAddr;
+use tower_http::services::ServeDir;
 
-#[derive(Debug,Deserialize)]
+pub use self::error::{Error, Result};
+
+mod error;
+mod web;
+
+#[derive(Debug, Deserialize)]
 struct HelloParams {
-    name : Option<String>
+    name: Option<String>,
 }
 
 #[tokio::main]
 async fn main() {
-    let routes_all = Router::new().merge(routes_hello());
 
-    let addr = SocketAddr::from(([127,0,0,1],8080));
+
+    let routes_all = Router::new()
+        .merge(web::routes_login::routes())
+        .layer(middleware::map_response(main_response_mapper))
+        .fallback_service(routes_static());
+
+    // response mapper
+    async fn main_response_mapper(res: Response) -> Response {
+        println!("-->>{:<12}", "MAPPER RESPONSE");
+        println!(" ");
+        res
+    }
+
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     println!("->> LISTENING ON {}", &addr);
     axum::Server::bind(&addr)
         .serve(routes_all.into_make_service())
@@ -25,22 +45,7 @@ async fn main() {
         .unwrap();
 }
 
-// - Routes Hello
-fn routes_hello() -> Router {
-    Router::new()
-        .route("/hello",get(handler_hello))
-        .route("/hello2/:name",get(handler_hello2))
-}
-// eg /hello?name=bob
-async fn handler_hello(Query(params):Query<HelloParams>)->impl IntoResponse{
-    println!("->>{:<12}","Handler");
-    let name = params.name.as_deref().unwrap_or("world"); 
-    Html(format!("<strong>{name}!</strong>"))
-}
-
-// eg /hello2/xob
-async fn handler_hello2(Path(name) : Path<String>) -> impl IntoResponse {
-    println!("->>{:<12}","Handler");
-    Html(format!("<strong>{name}!</strong>"))
-
+// routes Static
+fn routes_static() -> Router {
+    Router::new().nest_service("/", get_service(ServeDir::new("./")))
 }
