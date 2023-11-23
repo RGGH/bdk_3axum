@@ -1,6 +1,6 @@
 #![allow(unused)]
 use axum::extract::Path;
-use axum::extract::{Query,Extension};
+use axum::extract::{Extension, Query};
 use axum::middleware;
 use axum::response::Response;
 use axum::response::{Html, IntoResponse};
@@ -23,8 +23,6 @@ struct HelloParams {
 
 #[tokio::main]
 async fn main() {
-
-
     let routes_all = Router::new()
         .merge(web::routes_login::routes())
         .layer(middleware::map_response(main_response_mapper))

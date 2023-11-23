@@ -1,6 +1,6 @@
-use std::collections::HashMap;
 use bdk::bitcoin::Network;
 use bdk::database::MemoryDatabase;
+use std::collections::HashMap;
 
 use crate::web;
 use crate::web::AUTH_TOKEN;
@@ -19,9 +19,8 @@ use bdk::keys::{
     DerivableKey, ExtendedKey, GeneratableKey, GeneratedKey,
 };
 use bdk::template::Bip84;
-use bdk::{miniscript, KeychainKind, Wallet};
 use bdk::wallet::AddressIndex;
-
+use bdk::{miniscript, KeychainKind, Wallet};
 
 pub fn routes() -> Router {
     Router::new()
@@ -52,11 +51,8 @@ struct LoginPayload {
     password: String,
 }
 
-
-
 // Handler for "/api/wallet" route
 async fn gwallet(Query(params): Query<HashMap<String, String>>) -> Json<Value> {
-
     let network = Network::Testnet;
     let mnemonic: GeneratedKey<_, miniscript::Segwitv0> =
         Mnemonic::generate((WordCount::Words12, Language::English)).unwrap();
@@ -74,16 +70,18 @@ async fn gwallet(Query(params): Query<HashMap<String, String>>) -> Json<Value> {
         MemoryDatabase::default(),
     )
     .unwrap();
-    
+
     // get a new address (this increments revealed derivation index)
-    println!("revealed address: {:?}", wallet.get_address(AddressIndex::New));
-  
+    println!(
+        "revealed address: {:?}",
+        wallet.get_address(AddressIndex::New)
+    );
 
     let q: Option<&String> = params.get("q");
 
     Json(json!({
         "message": "Hello",
         "q": q,
-        
+
     }))
 }
