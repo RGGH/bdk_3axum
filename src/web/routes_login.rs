@@ -80,7 +80,7 @@ async fn gwallet(Query(params): Query<HashMap<String, String>>) -> Json<Value> {
     let q: Option<&String> = params.get("q");
 
     Json(json!({
-        "message": "Hello",
+        "message": "Hello!",
         "q": q,
 
     }))
