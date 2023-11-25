@@ -8,4 +8,4 @@ uses : Bitcoin Testnet + Electrum
 
 #### https://redandgreen.co.uk/bitcoin-testnet-test-faucet/bitcoin-programming/
 
-![alt](t-rec.mp4)
+![alt](t-rec.gif)
