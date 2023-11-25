@@ -25,7 +25,7 @@ use bdk::{miniscript, KeychainKind, Wallet};
 pub fn routes() -> Router {
     Router::new()
         .route("/api/login", post(api_login))
-        .route("/api/wallet", get(gwallet))
+        .route("/api/gen_wallet", get(gen_wallet))
 }
 
 async fn api_login(payload: Json<LoginPayload>) -> Result<Json<Value>> {
@@ -52,7 +52,7 @@ struct LoginPayload {
 }
 
 // Handler for "/api/wallet" route
-async fn gwallet(Query(params): Query<HashMap<String, String>>) -> Json<Value> {
+async fn gen_wallet(Query(params): Query<HashMap<String, String>>) -> Json<Value> {
     let network = Network::Testnet;
     let mnemonic: GeneratedKey<_, miniscript::Segwitv0> =
         Mnemonic::generate((WordCount::Words12, Language::English)).unwrap();
