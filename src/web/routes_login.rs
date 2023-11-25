@@ -1,5 +1,7 @@
-use bdk::bitcoin::Network;
-use bdk::database::MemoryDatabase;
+use rstml_component::{move_html, write_html, For, HtmlComponent, HtmlContent};
+use rstml_component_axum::HtmlContentAxiosExt;
+
+use std::net::SocketAddr;
 use std::collections::HashMap;
 
 use crate::web;
@@ -10,6 +12,7 @@ use axum::extract::Query;
 use axum::http::{Response, StatusCode};
 use axum::routing::{get, post};
 use axum::Router;
+use axum::response::IntoResponse;
 use axum::{Extension, Json};
 use serde::Deserialize;
 use serde_json::{json, Value};
@@ -18,14 +21,17 @@ use bdk::keys::{
     bip39::{Language, Mnemonic, WordCount},
     DerivableKey, ExtendedKey, GeneratableKey, GeneratedKey,
 };
+use bdk::database::MemoryDatabase;
 use bdk::template::Bip84;
 use bdk::wallet::AddressIndex;
 use bdk::{miniscript, KeychainKind, Wallet};
+use bdk::bitcoin::Network;
 
 pub fn routes() -> Router {
     Router::new()
         .route("/api/login", post(api_login))
         .route("/api/gen_wallet", get(gen_wallet))
+        .route("/", get(index))
 }
 
 async fn api_login(payload: Json<LoginPayload>) -> Result<Json<Value>> {
@@ -81,4 +87,44 @@ async fn gen_wallet(Query(params): Query<HashMap<String, String>>) -> Json<Value
         "message": new_wallet.address,
         "q": q,
     }))
+}
+
+#[derive(HtmlComponent)]
+struct Book {
+    title: &'static str,
+    author: &'static str,
+}
+
+impl Book {
+    fn new(title: &'static str, author: &'static str) -> Self {
+        Self { title, author }
+    }
+}
+
+impl HtmlContent for Book {
+    fn fmt(self, formatter: &mut rstml_component::HtmlFormatter) -> std::fmt::Result {
+        write_html!(formatter,
+            <div>
+                <h1>{self.title}</h1>
+                <h2>"("{self.author}")"</h2>
+            </div>
+        )
+    }
+}
+
+// Your Axum handler
+async fn index() -> impl IntoResponse {
+    let books = [
+        ("BDK", "Bitcoin Dev Kit"),
+        ("Axum", "API"),
+    ];
+
+    move_html!(
+        <div class="books">
+            <For items={books}>
+                { |f, book| Book::new(book.0, book.1).fmt(f) }
+            </For>
+        </div>
+    )
+    .into_html()
 }
