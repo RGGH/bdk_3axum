@@ -81,11 +81,11 @@ async fn gen_wallet(Query(params): Query<HashMap<String, String>>) -> Json<Value
     // get a new address (this increments revealed derivation index)
     println!("revealed address: {:?}", new_wallet.address);
 
-    let q: Option<&String> = params.get("q");
+    let amount: Option<&String> = params.get("amount");
 
     Json(json!({
         "message": new_wallet.address,
-        "q": q,
+        "amount": amount,
     }))
 }
 
