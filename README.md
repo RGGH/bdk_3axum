@@ -22,4 +22,9 @@ uses : Bitcoin Testnet + Electrum
     api/gen_wallet
     api/load_wallet
 
-![alt](t-rec.gif)
+
+#### xprv is read from json
+    {
+  "xprv": "xprv9s21ZrQH143K2x5hVoEpv7wE9e4Mk4eeMW2yj1P6EYsL3bexhFi4aFKMWeWw5p7u3kGtZonxoX3EPp3oQtBsxSmWqw6TcTq6ttNt44QhXDs",
+  "network": "testnet"
+}
