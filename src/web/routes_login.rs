@@ -147,12 +147,12 @@ async fn load_wallet(Query(params): Query<HashMap<String, String>>) -> Json<Valu
 
     // Parse xprv
     let xprv = ExtendedPrivKey::from_str(&xprv)
-        // .map_err(|err| {
-        //     eprintln!("Error parsing xprv: {}", err);
-        //     Json(json!({
-        //         "error": "Failed to parse xprv",
-        //     }))
-        // })
+        .map_err(|err| {
+            eprintln!("Error parsing xprv: {}", err);
+            Json(json!({
+                "error": "Failed to parse xprv",
+            }))
+        })
         .unwrap();
 
     // Get xprv from the extended key
