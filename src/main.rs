@@ -1,5 +1,4 @@
 #![allow(unused)]
-use env_logger;
 use axum::extract::Path;
 use axum::extract::{Extension, Query};
 use axum::middleware;
@@ -8,6 +7,7 @@ use axum::response::{Html, IntoResponse};
 use axum::routing::get;
 use axum::routing::get_service;
 use axum::Router;
+use env_logger;
 use serde::Deserialize;
 use tokio::net::TcpListener;
 use tower_http::services::ServeDir;
@@ -24,7 +24,6 @@ struct HelloParams {
 
 #[tokio::main]
 async fn main() {
-
     env_logger::init();
 
     let app = Router::new()

@@ -1,3 +1,7 @@
+use crate::web;
+use crate::web::AUTH_TOKEN;
+use crate::{Error, Result};
+
 use rstml_component::{move_html, write_html, For, HtmlComponent, HtmlContent};
 use rstml_component_axum::HtmlContentAxiosExt;
 
@@ -13,9 +17,6 @@ use std::net::SocketAddr;
 use std::path::Path;
 use std::str::FromStr;
 
-use crate::web;
-use crate::web::AUTH_TOKEN;
-use crate::{Error, Result};
 use axum::body::Body;
 use axum::extract::Query;
 use axum::http::{Response, StatusCode};
@@ -145,7 +146,7 @@ async fn load_wallet(Query(params): Query<HashMap<String, String>>) -> Json<Valu
 
     info!("xprv: {:?}", &xprv);
 
-    // Parse xprv
+    // Get xprv from the extended key
     let xprv = ExtendedPrivKey::from_str(&xprv)
         .map_err(|err| {
             eprintln!("Error parsing xprv: {}", err);
@@ -155,8 +156,6 @@ async fn load_wallet(Query(params): Query<HashMap<String, String>>) -> Json<Valu
         })
         .unwrap();
 
-    // Get xprv from the extended key
-    // let xprv = xkey.into_xprv(network).unwrap();
     // Create a BDK wallet structure using BIP 84 descriptor ("m/84h/1h/0h/0" and "m/84h/1h/0h/1")
     let wallet = Wallet::new(
         Bip84(xprv, KeychainKind::External),
