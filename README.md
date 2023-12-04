@@ -7,6 +7,8 @@ BIP44 specifies the structure as consisting of five
 predefined tree levels:
     m / purpose' / coin_type' / account' / change / address_index
 
+https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch05.asciidoc#extended-keys
+
 uses : Bitcoin Testnet + Electrum
 
 - Create Bitcoin Wallet and save xrpv to json (totally insecure, but this is for learning)
