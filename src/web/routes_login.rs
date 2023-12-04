@@ -31,7 +31,6 @@ pub fn routes() -> Router {
     Router::new()
         .route("/api/login", post(api_login))
         .route("/api/gen_wallet", get(gen_wallet))
-        .route("/", get(index))
 }
 
 async fn api_login(payload: Json<LoginPayload>) -> Result<Json<Value>> {
@@ -112,19 +111,3 @@ impl HtmlContent for Book {
     }
 }
 
-// Your Axum handler
-async fn index() -> impl IntoResponse {
-    let books = [
-        ("BDK", "Bitcoin Dev Kit"),
-        ("Axum", "API"),
-    ];
-
-    move_html!(
-        <div class="books">
-            <For items={books}>
-                { |f, book| Book::new(book.0, book.1).fmt(f) }
-            </For>
-        </div>
-    )
-    .into_html()
-}
