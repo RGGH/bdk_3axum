@@ -1,6 +1,8 @@
-# bdk_3axum
+# Learing Rust, Axum, BDK
 
-Attempt to combine BDK & Axum (learning exercise)
+My bad..I thought BDK needed to use a database...Duh! - That's what the xprv is for!
+This code will look ugly, I'll refactor in due course.
+
 uses : Bitcoin Testnet + Electrum
 
 - Create Bitcoin Wallet and save xrpv to json (totally insecure, but this is for learning)
