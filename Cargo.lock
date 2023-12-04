@@ -221,6 +221,7 @@ dependencies = [
  "bdk",
  "env_logger",
  "httpc-test",
+ "log",
  "rstml-component",
  "rstml-component-axum",
  "serde",

@@ -1,12 +1,17 @@
 use rstml_component::{move_html, write_html, For, HtmlComponent, HtmlContent};
 use rstml_component_axum::HtmlContentAxiosExt;
 
-use std::collections::HashMap;
-use std::net::SocketAddr;
+use env_logger::Env;
+use log::info;
+use log::LevelFilter;
 
+use std::collections::HashMap;
+use std::fs;
 use std::fs::File;
 use std::io::{self, Read, Write};
+use std::net::SocketAddr;
 use std::path::Path;
+use std::str::FromStr;
 
 use crate::web;
 use crate::web::AUTH_TOKEN;
@@ -21,6 +26,7 @@ use axum::{Extension, Json};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+use bdk::bitcoin::util::bip32::ExtendedPrivKey;
 use bdk::bitcoin::Network;
 use bdk::database::MemoryDatabase;
 use bdk::keys::{
@@ -83,7 +89,6 @@ struct WalletConfig {
     network: Network,
 }
 
-// Handler for "/api/genwallet" route
 async fn gen_wallet(Query(params): Query<HashMap<String, String>>) -> Json<Value> {
     let network = Network::Testnet;
     let mnemonic: GeneratedKey<_, miniscript::Segwitv0> =
@@ -131,20 +136,27 @@ async fn load_wallet(Query(params): Query<HashMap<String, String>>) -> Json<Valu
         }
     };
 
+    // Log xprv_str just before parsing
     let wallet_config: WalletConfig = serde_json::from_str(&config_content).unwrap();
 
     // Extract values from the configuration
     let xprv = &wallet_config.xprv;
     let network = wallet_config.network;
 
-    let mnemonic: GeneratedKey<_, miniscript::Segwitv0> =
-        Mnemonic::generate((WordCount::Words12, Language::English)).unwrap();
-    let mnemonic_words = mnemonic.to_string();
-    let mnemonic = Mnemonic::parse(&mnemonic_words).unwrap();
-    // Generate the extended key
-    let xkey: ExtendedKey = mnemonic.into_extended_key().unwrap();
+    info!("xprv: {:?}", &xprv);
+
+    // Parse xprv
+    let xprv = ExtendedPrivKey::from_str(&xprv)
+        // .map_err(|err| {
+        //     eprintln!("Error parsing xprv: {}", err);
+        //     Json(json!({
+        //         "error": "Failed to parse xprv",
+        //     }))
+        // })
+        .unwrap();
+
     // Get xprv from the extended key
-    let xprv = xkey.into_xprv(network).unwrap();
+    // let xprv = xkey.into_xprv(network).unwrap();
     // Create a BDK wallet structure using BIP 84 descriptor ("m/84h/1h/0h/0" and "m/84h/1h/0h/1")
     let wallet = Wallet::new(
         Bip84(xprv, KeychainKind::External),
